@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as pdfParse from 'pdf-parse';
+import pdfParse = require('pdf-parse');
 
 export interface RawDocument {
   text: string;
@@ -15,9 +15,18 @@ export class DocumentLoaderService {
 
   async load(dir: string): Promise<RawDocument[]> {
     const absDir = path.resolve(dir);
+    if (!fs.existsSync(absDir)) {
+      throw new NotFoundException(`Directory not found: ${absDir}`);
+    }
+    if (!fs.statSync(absDir).isDirectory()) {
+      throw new NotFoundException(`Not a directory: ${absDir}`);
+    }
     const files = fs.readdirSync(absDir).filter((f) =>
       this.supportedExtensions.has(path.extname(f).toLowerCase()),
     );
+    if (files.length === 0) {
+      throw new NotFoundException(`No files found in directory: ${absDir}`);
+    }
 
     const docs: RawDocument[] = [];
     for (const file of files) {

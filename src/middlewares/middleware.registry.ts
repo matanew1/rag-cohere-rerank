@@ -1,16 +1,18 @@
-import { Injectable, NestMiddleware, Type } from '@nestjs/common';
-
-export type MiddlewareEntry = Type<NestMiddleware> | NestMiddleware;
+import { Inject, Injectable, INestApplication } from '@nestjs/common';
+import { APP_MIDDLEWARES } from './middleware.tokens';
+import { AppMiddleware } from './types';
 
 @Injectable()
 export class MiddlewareRegistry {
-  private readonly middlewares: MiddlewareEntry[] = [];
+  constructor(@Inject(APP_MIDDLEWARES) private readonly middlewares: AppMiddleware[]) {}
 
-  register(middleware: MiddlewareEntry): void {
-    this.middlewares.push(middleware);
+  async applyAll(app: INestApplication): Promise<void> {
+    for (const middleware of this.middlewares) {
+      await middleware.use(app);
+    }
   }
 
-  getMiddlewares(): MiddlewareEntry[] {
+  getMiddlewares(): AppMiddleware[] {
     return [...this.middlewares];
   }
 }

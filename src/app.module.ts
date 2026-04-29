@@ -8,6 +8,7 @@ import { RerankModule } from './rerank/rerank.module';
 import { LLMModule } from './llm/llm.module';
 import { IngestionModule } from './ingestion/ingestion.module';
 import { QueryModule } from './query/query.module';
+import { MiddlewareModule } from './middlewares/middleware.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { QueryModule } from './query/query.module';
     LLMModule,
     IngestionModule,
     QueryModule,
+    MiddlewareModule,
   ],
   controllers: [AppController],
 })

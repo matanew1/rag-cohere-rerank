@@ -18,7 +18,7 @@ const response = (
 });
 
 describe('ReportService', () => {
-  it('renders a compact results table with summary metrics', () => {
+  it('renders the reranking evaluation report with summary metrics and required checks', () => {
     const service = new ReportService();
 
     const report = service.generate([
@@ -39,20 +39,19 @@ describe('ReportService', () => {
       },
     ]);
 
+    expect(report).toContain('# RAG Reranking Evaluation');
     expect(report).toContain('## Summary');
-    expect(report).toContain('| Questions | p50 rerank | Avg total delta | Retrieved -> used |');
-    expect(report).toContain('| 3 | 160ms | +217ms | 20 -> 5 |');
-    expect(report).toContain('## Takeaways');
-    expect(report).toContain('2/3 questions cited the same source set');
-    expect(report).toContain('The rerank step added 160ms at p50');
-    expect(report).toContain('over-fetches 20 candidates before reducing to 5');
-    expect(report).toContain('Cohere errors fall back to vector order');
-    expect(report).toContain('300-word windows with 50-word overlap');
+    expect(report).toContain('- Questions tested: **3**');
+    expect(report).toContain('- p50 rerank latency added: **160ms**');
+    expect(report).toContain('- Average total request delta: **+217ms**');
+    expect(report).toContain('## Required Checks');
+    expect(report).toContain('retrieve **top 20** vector candidates, rerank, keep best **5**');
+    expect(report).toContain('return original vector-order results');
+    expect(report).toContain('**300-word chunks + 50-word overlap**');
+    expect(report).toContain('## Short Comparison (Required)');
+    expect(report).toContain('Across the same 3 questions');
     expect(report).toContain('## Results');
-    expect(report).toContain('| # | Question | Rerank | Vector | Sources | Latency | Change |');
-    expect(report).toContain('R: rag.md / V: overview.md');
-    expect(report).toContain('R 1200ms (120ms) / V 1000ms');
-    expect(report).toContain('+200ms total');
-    expect(report).not.toContain('### What Changed');
+    expect(report).toContain('| # | Question | Rerank | Vector Only | Latency | Benefit |');
+    expect(report).toContain('R 1200ms (+120ms rerank) / V 1000ms');
   });
 });
