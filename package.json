@@ -1,7 +1,7 @@
 {
   "name": "rag-cohere-rerank",
   "version": "1.0.0",
-  "description": "NestJS RAG pipeline with Cohere reranking, Chroma vector store, and Gemini Flash",
+  "description": "NestJS RAG pipeline with Cohere reranking, Chroma vector store, and Mistral generation",
   "scripts": {
     "build": "nest build",
     "start": "nest start",
@@ -18,7 +18,7 @@
     "generate:pdf": "ts-node scripts/generate-pdf.ts"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.21.0",
+    "@mistralai/mistralai": "^2.2.1",
     "@nestjs/common": "^10.3.0",
     "@nestjs/core": "^10.3.0",
     "@nestjs/platform-express": "^10.3.0",

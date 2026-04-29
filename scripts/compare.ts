@@ -6,11 +6,16 @@ import { QueryOrchestrator } from '../src/query/query.orchestrator';
 import { ReportService, ComparisonResult } from '../src/reports/report.service';
 
 const QUESTIONS = [
-  'What is retrieval-augmented generation and how does it work?',
-  'How does backpropagation train a neural network?',
-  'What are the advantages of reranking in RAG pipelines?',
-  'Explain the difference between supervised and unsupervised learning.',
-  'What role do vector embeddings play in semantic search?',
+  'If Cohere reranking times out after vector retrieval, what should the RAG API do and why?',
+  'Why should the retriever fetch 20 candidates before reranking down to 5 instead of reranking only the vector top 5?',
+  'Why can recall@20 look healthy while final RAG answers are still weak?',
+  'What problem does 50-word chunk overlap solve when technical facts sit near a chunk boundary?',
+  'When several passages share words like fallback, vector order, and latency, how does a cross-encoder reranker choose the best evidence?',
+  'How should we tell whether reranking helped if the reranked and vector answers cite the same source file?',
+  'What is the difference between fallback to vector-order chunks and fallback to a smaller language model?',
+  'Why are generic questions like "What is RAG?" less useful for evaluating a reranker than operational questions about failures or boundaries?',
+  'What should operators inspect when the correct evidence appears in the top 20 retrieved chunks but the generated answer is still generic?',
+  'How do near-miss passages about video chunking, UI vector order, or model routing test whether reranking is working?',
 ];
 
 async function main(): Promise<void> {

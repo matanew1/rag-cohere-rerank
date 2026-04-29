@@ -1,0 +1,31 @@
+Retrieval Distractors and Ambiguous Matches
+
+This file intentionally contains passages that share vocabulary with the RAG pipeline documents but answer different questions. It is useful for testing whether the reranker can separate exact evidence from near-topic matches.
+
+Vector order in user interfaces
+
+Some design tools use a vector ordering system for icons, layers, and drawing paths. In that context, vector order refers to how shapes are stacked on a canvas, not how document embeddings are ranked by semantic similarity. A designer may move a vector object above another layer, but this has nothing to do with a RAG retriever choosing candidate chunks.
+
+Fallback in model selection
+
+Fallback can also mean using a smaller language model when a larger model is unavailable. A chat product might fall back from a premium model to a cheaper model when rate limits are exceeded. This is a model-routing strategy, not the same as returning vector-search order when a Cohere reranker fails after retrieval.
+
+Reranking search results for e-commerce
+
+Retail search engines sometimes rerank products using price, margin, inventory, and personalization. A product with higher profit may be boosted even if it is not the most semantically relevant result. This business reranking is different from a cross-encoder reranker that scores query-document relevance for RAG.
+
+Chunking in video streaming
+
+Video streaming systems chunk media into short segments for adaptive bitrate delivery. Segment duration, buffer size, and CDN cache hit rate matter more than textual overlap. This use of chunking is unrelated to splitting documents into overlapping word windows for retrieval-augmented generation.
+
+Recall in support operations
+
+A customer support team may use recall to mean whether an agent remembers a previous conversation. That operational sense is different from recall@k in information retrieval, where the question is whether a relevant document appears in the top k retrieved results.
+
+Latency budgets for web pages
+
+Latency optimization for web pages often focuses on image compression, caching, layout shifts, and JavaScript bundle size. These topics use the same word latency, but they do not explain the additional time introduced by an external reranking API call in a RAG pipeline.
+
+Supervision in education
+
+Supervised and unsupervised can describe classroom settings. A supervised exam has an invigilator; unsupervised study does not. Those phrases overlap with machine learning terminology but do not explain labelled examples, ground-truth targets, clustering, or dimensionality reduction.

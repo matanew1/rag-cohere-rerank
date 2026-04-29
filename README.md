@@ -1,14 +1,14 @@
 # rag-cohere-rerank
 
-NestJS RAG pipeline with Chroma vector search, Cohere reranking, Gemini generation, Swagger docs, and a mixed sample corpus of PDF, Markdown, and text files.
+NestJS RAG pipeline with Chroma vector search, Cohere reranking, Mistral generation, Swagger docs, and a mixed sample corpus of PDF, Markdown, and text files.
 
 ## What It Does
 
-The service ingests local documents, chunks them, embeds each chunk with `@xenova/transformers`, stores vectors in Chroma, retrieves candidate chunks for a question, optionally reranks them with Cohere, and sends the final context to Gemini.
+The service ingests local documents, chunks them, embeds each chunk with `@xenova/transformers`, stores vectors in Chroma, retrieves candidate chunks for a question, optionally reranks them with Cohere, and sends the final context to Mistral.
 
 ```text
 POST /api/ingest -> DocumentLoader -> ChunkService -> EmbeddingService -> ChromaService
-POST /api/query  -> EmbeddingService -> ChromaService -> CohereRerank -> GeminiService
+POST /api/query  -> EmbeddingService -> ChromaService -> CohereRerank -> MistralService
 GET  /api/health -> ChromaService.healthCheck()
 ```
 
@@ -21,7 +21,7 @@ npm install
 cp .env.example .env
 ```
 
-Fill in `COHERE_API_KEY` and `GEMINI_API_KEY` in `.env`, then start Chroma:
+Fill in `COHERE_API_KEY` and `MISTRAL_API_KEY` in `.env`, then start Chroma:
 
 ```bash
 docker compose up -d chroma
@@ -95,8 +95,8 @@ Response:
 
 ```json
 {
-  "documentsProcessed": 6,
-  "chunksIngested": 18
+  "documentsProcessed": 10,
+  "chunksIngested": 28
 }
 ```
 
@@ -146,19 +146,21 @@ The app Dockerfile uses `node:20-bookworm-slim` because `@xenova/transformers` d
 | Variable | Default | Description |
 |---|---|---|
 | `COHERE_API_KEY` | required | Cohere API key for reranking |
-| `GEMINI_API_KEY` | required | Google AI Studio key for Gemini |
+| `MISTRAL_API_KEY` | required | Mistral AI API key |
+| `MISTRAL_MODEL` | `mistral-small-latest` | Mistral model used for answer generation |
+| `MISTRAL_BASE_URL` | `https://api.mistral.ai` | Mistral API server URL passed to the SDK |
 | `CHROMA_URL` | `http://localhost:8000` | Chroma server URL |
 | `CHROMA_COLLECTION` | `rag_documents` | Chroma collection name |
 | `PORT` | `3000` | HTTP port |
 
 ## Sample Documents
 
-`documents/sample/` intentionally contains two files of each supported type:
+`documents/sample/` contains a mixed corpus with exact-answer passages and near-miss distractors so reranking has a meaningful precision task:
 
 ```text
-PDF: transformer-architecture.pdf, llm-serving-latency.pdf
-MD:  rag-overview.md, machine-learning.md
-TXT: neural-networks.txt, model-evaluation.txt
+PDF: transformer-architecture.pdf, llm-serving-latency.pdf, rag-rerank-evaluation-playbook.pdf, ambiguous-evidence-audit.pdf
+MD:  rag-overview.md, machine-learning.md, rag-production-cases.md, support-runbook.md
+TXT: neural-networks.txt, retrieval-distractors.txt
 ```
 
 ## Tests
@@ -184,7 +186,13 @@ After the service is running and documents are ingested, run:
 npm run compare
 ```
 
-The script asks fixed questions with reranking on and off, then writes `reports/comparison.md` with answer differences, citations, and p50 rerank latency.
+The script asks ten fixed diagnostic questions with reranking on and off, then writes `reports/comparison.md` with a compact results table, 2-3 sentence takeaways, source differences, and p50 rerank latency.
+
+Implementation notes for review:
+
+- Retrieval over-fetches 20 candidates before Cohere reranks down to the final 5 chunks.
+- Cohere failures degrade gracefully by returning the vector-order top chunks.
+- Chunking is explicit: 300-word chunks with 50-word overlap, plus source and word-boundary metadata.
 
 ## Project Structure
 
@@ -197,7 +205,7 @@ src/
   embedding/        EmbeddingService
   vector-store/     ChromaService
   rerank/           CohereRerankService
-  llm/              GeminiService
+  llm/              MistralService
   ingestion/        Document loading and ingestion API
   query/            Query orchestration and query API
   reports/          ReportService
