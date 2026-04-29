@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+reports/*.md
+chroma-data
+.cache
+.git
+.env
+*.log

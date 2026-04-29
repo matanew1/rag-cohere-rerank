@@ -1,0 +1,25 @@
+services:
+  chroma:
+    image: chromadb/chroma:latest
+    ports:
+      - '8000:8000'
+    volumes:
+      - chroma-data:/chroma/chroma
+    environment:
+      IS_PERSISTENT: 'TRUE'
+
+  # app:
+  #   build: .
+  #   ports:
+  #     - '3000:3000'
+  #   env_file: .env
+  #   depends_on:
+  #     - chroma
+  #   environment:
+  #     CHROMA_URL: http://chroma:8000
+  #   volumes:
+  #     - transformers-cache:/root/.cache/huggingface
+
+volumes:
+  chroma-data:
+  transformers-cache:

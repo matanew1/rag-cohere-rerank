@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build and test output
+dist/
+coverage/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Generated reports
+reports/*.md
+!reports/.gitkeep
+
+# Local databases, model caches, and Docker volumes
+chroma-data/
+.cache/
+.npm/
+
+# OS, editor, and local assistant state
+.DS_Store
+.idea/
+.vscode/
+.claude/

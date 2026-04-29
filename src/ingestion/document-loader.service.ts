@@ -1,0 +1,45 @@
+import { Injectable, Logger } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as pdfParse from 'pdf-parse';
+
+export interface RawDocument {
+  text: string;
+  source: string;
+}
+
+@Injectable()
+export class DocumentLoaderService {
+  private readonly logger = new Logger(DocumentLoaderService.name);
+  private readonly supportedExtensions = new Set(['.md', '.txt', '.pdf']);
+
+  async load(dir: string): Promise<RawDocument[]> {
+    const absDir = path.resolve(dir);
+    const files = fs.readdirSync(absDir).filter((f) =>
+      this.supportedExtensions.has(path.extname(f).toLowerCase()),
+    );
+
+    const docs: RawDocument[] = [];
+    for (const file of files) {
+      const text = await this.readFile(path.join(absDir, file));
+      if (text) {
+        docs.push({ text, source: file });
+        this.logger.log(`Loaded: ${file}`);
+      }
+    }
+    return docs;
+  }
+
+  private async readFile(filePath: string): Promise<string | null> {
+    const ext = path.extname(filePath).toLowerCase();
+    if (ext === '.md' || ext === '.txt') {
+      return fs.readFileSync(filePath, 'utf-8');
+    }
+    if (ext === '.pdf') {
+      const buffer = fs.readFileSync(filePath);
+      const data = await pdfParse(buffer);
+      return data.text;
+    }
+    return null;
+  }
+}

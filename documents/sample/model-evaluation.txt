@@ -1,0 +1,31 @@
+Model Evaluation for Retrieval-Augmented Generation
+
+Evaluation answers the question: is the RAG system producing useful and grounded answers for realistic users? A complete evaluation looks at retrieval, reranking, generation, latency, and human trust.
+
+Retrieval Metrics
+
+Retrieval is often evaluated with recall@k, precision@k, mean reciprocal rank (MRR), and normalized discounted cumulative gain (NDCG). Recall@k asks whether at least one relevant chunk appears in the top k results. MRR rewards systems that place the first relevant result near the top. NDCG handles cases where some results are more relevant than others.
+
+For RAG, high recall is usually the first goal. If the needed evidence is not retrieved, the language model cannot reliably answer from context. After recall is acceptable, teams focus on precision so the model receives fewer distracting chunks.
+
+Answer Quality
+
+Generated answers can be evaluated for relevance, faithfulness, completeness, and clarity. Relevance means the answer addresses the user's question. Faithfulness means every factual claim is supported by the retrieved context. Completeness means the answer includes the important details that a user needs. Clarity means the answer is understandable and well organized.
+
+Automated judges can help, but they should not be the only signal. LLM-based evaluation can miss subtle mistakes or over-reward fluent answers. Human review is still important for high-stakes domains.
+
+Golden Datasets
+
+A golden dataset contains representative user questions, expected supporting documents, and reference answers or grading rubrics. The dataset should include easy cases, ambiguous cases, missing-information cases, and adversarial cases.
+
+It is useful to record the source of each question. Questions from support tickets, sales calls, developer forums, and internal search logs often reveal very different failure modes.
+
+A/B Testing
+
+Offline evaluation is fast, but online behavior matters. A/B tests can measure click-through, follow-up question rate, thumbs-up rate, time to resolution, and escalation rate. These product metrics reveal whether users actually trust and benefit from the system.
+
+Regression Testing
+
+RAG pipelines change frequently: documents are updated, prompts are revised, embedding models are replaced, and rerankers are tuned. Regression tests catch cases where a change improves one metric but breaks important existing behavior.
+
+A practical workflow runs a small smoke test on every pull request and a larger evaluation suite before release. Results should be stored over time so teams can see trends rather than relying on one-off examples.

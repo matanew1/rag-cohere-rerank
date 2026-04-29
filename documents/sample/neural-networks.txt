@@ -1,0 +1,39 @@
+Neural Networks: Fundamentals and Training
+
+A neural network is a computational model loosely inspired by the structure of the biological brain. It consists of layers of interconnected nodes called neurons. Each neuron receives inputs, applies a weighted sum, adds a bias term, and passes the result through a non-linear activation function. The output is then forwarded to the next layer.
+
+Layers
+
+Modern neural networks are organized into three types of layers. The input layer receives raw data such as pixel values, token embeddings, or numerical features. Hidden layers transform the data through learned weight matrices. The output layer produces the final prediction, such as a class probability distribution or a continuous value.
+
+Deep neural networks have many hidden layers. The depth allows the network to learn increasingly abstract representations: early layers detect simple patterns like edges; deeper layers detect complex structures like faces or concepts.
+
+Activation Functions
+
+Activation functions introduce non-linearity into the network. Without them, stacked linear layers would collapse into a single linear transformation and the network could not learn complex patterns.
+
+Common activation functions include ReLU (Rectified Linear Unit), which outputs max(0, x) and is the default in most hidden layers today. Sigmoid maps inputs to (0, 1) and is used for binary output layers. Softmax normalizes outputs into a probability distribution and is used for multi-class classification. GELU and SiLU are smooth approximations of ReLU used in transformer models.
+
+Backpropagation
+
+Backpropagation is the algorithm used to train neural networks. It computes the gradient of the loss function with respect to every weight in the network by applying the chain rule of calculus layer by layer, moving from output back to input (hence "back").
+
+The training loop works as follows. First, a forward pass is performed: the input is propagated through all layers to produce a prediction. Second, the loss between the prediction and the ground-truth label is computed using a loss function such as cross-entropy or mean squared error. Third, a backward pass is performed: gradients are computed for every weight using backpropagation. Fourth, the weights are updated by subtracting a scaled version of the gradient using an optimizer such as SGD, Adam, or AdamW. The learning rate controls the scale of the update.
+
+Vanishing and Exploding Gradients
+
+A challenge in training deep networks is the vanishing gradient problem: gradients can become exponentially small as they propagate backward through many layers, making early layers learn very slowly. Residual connections (skip connections) used in ResNets and Transformers mitigate this by allowing gradients to flow directly across layers. Batch normalization and layer normalization also stabilize training.
+
+The opposite problem, exploding gradients, is addressed with gradient clipping, which caps the gradient norm at a maximum threshold.
+
+Overfitting and Regularization
+
+Overfitting occurs when a model memorizes the training data and performs poorly on unseen data. Techniques to combat overfitting include dropout (randomly zeroing activations during training), L2 weight regularization (penalizing large weights), data augmentation (artificially expanding the training set), and early stopping (halting training when validation loss stops improving).
+
+Convolutional Neural Networks
+
+Convolutional Neural Networks (CNNs) are specialized for processing grid-like data such as images. They use convolutional filters that slide across the input, sharing weights and drastically reducing the number of parameters compared to fully connected layers. Pooling layers downsample feature maps. CNNs dominated computer vision benchmarks from 2012 (AlexNet) until the adoption of Vision Transformers (ViT) around 2020.
+
+Recurrent Neural Networks
+
+Recurrent Neural Networks (RNNs) process sequential data by maintaining a hidden state that is updated at each time step. Long Short-Term Memory (LSTM) and Gated Recurrent Unit (GRU) networks address the vanishing gradient problem in RNNs by using gating mechanisms to selectively retain or forget information over long sequences. RNNs have largely been replaced by Transformers for NLP tasks due to the latter's parallelism and superior performance.
